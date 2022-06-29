@@ -190,10 +190,8 @@
     <ClInclude Include="DnfHelper.h" />
     <ClInclude Include="DnfHelperDlg.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Judgment.h" />
     <ClInclude Include="Traverse.h" />
     <ClInclude Include="Notice.h" />
-    <ClInclude Include="Package.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReadWrite.h" />
     <ClInclude Include="Resource.h" />
@@ -206,10 +204,8 @@
     <ClCompile Include="Driver.cpp" />
     <ClCompile Include="DnfHelper.cpp" />
     <ClCompile Include="DnfHelperDlg.cpp" />
-    <ClCompile Include="Judgment.cpp" />
     <ClCompile Include="Traverse.cpp" />
     <ClCompile Include="Notice.cpp" />
-    <ClCompile Include="Package.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

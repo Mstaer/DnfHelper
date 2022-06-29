@@ -36,9 +36,6 @@
     <ClInclude Include="Helper.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Package.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Call.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -46,9 +43,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ReadWrite.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Judgment.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Notice.h">
@@ -77,9 +71,6 @@
     <ClCompile Include="Helper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Package.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Call.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -87,9 +78,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ReadWrite.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Judgment.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Notice.cpp">
