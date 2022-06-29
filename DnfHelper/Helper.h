@@ -1,8 +1,11 @@
 #pragma once
 
 #include "framework.h"
+#include<vector>
+using namespace std;
 
 typedef int 整数型;
+typedef __int64 长整数型;
 typedef float 小数型;
 typedef double 双精度浮点型;
 typedef bool 逻辑型;

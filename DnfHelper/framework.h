@@ -31,13 +31,9 @@
 
 #include <WinIoCtl.h>
 
-
 #include <sstream>
 
 #include <string>
-
-
-
 
 
 #ifdef _UNICODE

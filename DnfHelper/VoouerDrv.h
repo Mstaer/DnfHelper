@@ -15,6 +15,9 @@ BOOL 保护_游戏_结束(DWORD64 窗口句柄, DWORD64 进程ID);
 
 DWORD64 内存_申请(DWORD 进程ID, DWORD64 进程地址, DWORD64 申请长度, DWORD64 内存属性, BOOL 是否物理);
 
+BOOL 内存_读字节集(ULONG pid, ULONG addr, PVOID pBuf, INT32 size);
+BOOL 内存_写字节集(ULONG pid, ULONG addr, ULONG pBuf, ULONG size);
+
 //此处是我们的demo测试文件,与驱动通讯的封装
 //根据您的代码,进行调整,
 //这里包含了当前版本的驱动所有功能,以后此Demo若无需要将不再更新
