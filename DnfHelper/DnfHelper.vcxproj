@@ -190,7 +190,6 @@
     <ClInclude Include="DnfHelper.h" />
     <ClInclude Include="DnfHelperDlg.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Traverse.h" />
     <ClInclude Include="Notice.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReadWrite.h" />
@@ -204,7 +203,6 @@
     <ClCompile Include="Driver.cpp" />
     <ClCompile Include="DnfHelper.cpp" />
     <ClCompile Include="DnfHelperDlg.cpp" />
-    <ClCompile Include="Traverse.cpp" />
     <ClCompile Include="Notice.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

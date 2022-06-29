@@ -48,9 +48,6 @@
     <ClInclude Include="Notice.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Traverse.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="VoouerDrv.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -81,9 +78,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Notice.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Traverse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="VoouerDrv.cpp">
