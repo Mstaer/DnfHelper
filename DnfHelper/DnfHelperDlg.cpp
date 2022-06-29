@@ -143,7 +143,7 @@ void CDnfHelperDlg::激活()
 	driver->Open(L"\\\\.\\vuDrv");
 
 	设置驱动句柄(driver->m_hDriver);
-	CHAR* key = "123";
+	CHAR* key = "B0A856B7AE45C406644FA76BBE156B63";
 
 	//激活驱动->校验驱动有效性(激活驱动)
 	LONG 结果 = 效验有效性(key);

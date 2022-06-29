@@ -4,7 +4,7 @@
 #include "VoouerDrv.h"
 
 INT64 ReadWrite::内存申请(ULONG 进程ID, ULONG 进程地址, DWORD64 申请长度) {
-	return 内存_申请(进程ID, 进程地址, 申请长度,64,false);
+	return 内存_申请(进程ID, 进程地址, 申请长度, 64, false);
 }
 
 vector<int> ReadWrite::内存读字节集(ULONG 进程ID, ULONG 进程地址, INT32 读取长度) {
