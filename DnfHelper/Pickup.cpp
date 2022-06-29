@@ -5,4 +5,5 @@ VOID Pickup::³¬¼¶Ê°È¡() {
 }
 
 VOID Pickup::Æ¯ÒÆÊ°È¡() {
+
 }
