@@ -185,14 +185,23 @@ void CDnfHelperDlg::激活()
 
 	日志公告(_T("驱动服务加载成功"));
 
+	HWND GameHwnd = ::FindWindow(L"地下城与勇士", L"地下城与勇士");
+	if (!GameHwnd)
+	{
+		日志公告(L"辅助激活失败，请运行游戏");
+		return;
+	}
+
+	DWORD GamePid;
+
+	::GetWindowThreadProcessId(GameHwnd, &GamePid);
+
+	日志公告(_T("GamePid：") + 整数转字符(GamePid));
+
 	//关闭符号链接句柄   使用期间请勿关闭句柄,否则驱动将会失效
 	// CloseHandle(driver->m_hDriver);
 	driver->m_hDriver = INVALID_HANDLE_VALUE;
 	return;
-}
-
-
-void abc() {
 }
 
 // 卸载按钮点击处理
@@ -225,4 +234,43 @@ void CDnfHelperDlg::卸载()
 
 	// 关闭窗口界面
 	AfxGetMainWnd()->SendMessage(WM_CLOSE);
+}
+
+#include <tlhelp32.h>
+#include <stdlib.h>
+
+
+BOOL FindProcessPid(const char* ProcessName, DWORD& dwPid)
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (hProcessSnap == INVALID_HANDLE_VALUE)
+	{
+		return(FALSE);
+	}
+
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if (!Process32First(hProcessSnap, &pe32))
+	{
+		CloseHandle(hProcessSnap);
+		return(FALSE);
+	}
+
+	BOOL    bRet = FALSE;
+	do
+	{
+		if (!strcmp(ProcessName, pe32.szExeFile))
+		{
+			dwPid = pe32.th32ProcessID;
+			bRet = TRUE;
+			break;
+		}
+
+	} while (Process32Next(hProcessSnap, &pe32));
+
+	CloseHandle(hProcessSnap);
+	return bRet;
 }
