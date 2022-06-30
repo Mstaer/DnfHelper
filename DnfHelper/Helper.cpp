@@ -6,7 +6,7 @@
 #include<Windows.h>
 #include<time.h>
 
-CString 整数转字符(int num) 
+CString 整数转字符(DWORD num)
 {
 	char tmp[50];
 	CString tmpData;
@@ -35,35 +35,35 @@ int 取随机数(int min, int max)//随机数，最小值-最大值
 	return m;
 }
 
-CString 取现行时间()
-{
-	CString now;
-	SYSTEMTIME sys;
-	GetLocalTime(&sys);
-
-	int year = sys.wYear;
-	int month = sys.wMonth;
-	int day = sys.wDay;
-	int hour = sys.wHour;
-	int minute = sys.wMinute;
-	int second = sys.wSecond;
-	int msecond = sys.wMilliseconds;
-	int dayofweek = sys.wDayOfWeek;
-
-	CString 装逼时间 = _T("装逼时间");
-	CString stryear = 整数转字符(year) + "年";
-	CString strmonth = 整数转字符(month) + "月";
-	CString strday = 整数转字符(day) + "日";
-	CString strhour = 整数转字符(hour) + "时";
-	CString strminute = 整数转字符(minute) + "分";
-	CString strsecond = 整数转字符(second) + "秒";
-	//CString strdayofweek = "星期" + (整数转字符(dayofweek);
-	now = stryear + strmonth + strday + strhour + strminute + strsecond;
-
-	////公告((文本型*)stryear.data());
-
-	return now;
-}
+//CString 取现行时间()
+//{
+//	CString now;
+//	SYSTEMTIME sys;
+//	GetLocalTime(&sys);
+//
+//	int year = sys.wYear;
+//	int month = sys.wMonth;
+//	int day = sys.wDay;
+//	int hour = sys.wHour;
+//	int minute = sys.wMinute;
+//	int second = sys.wSecond;
+//	int msecond = sys.wMilliseconds;
+//	int dayofweek = sys.wDayOfWeek;
+//
+//	CString 装逼时间 = _T("装逼时间");
+//	CString stryear = 整数转字符(year) + "年";
+//	CString strmonth = 整数转字符(month) + "月";
+//	CString strday = 整数转字符(day) + "日";
+//	CString strhour = 整数转字符(hour) + "时";
+//	CString strminute = 整数转字符(minute) + "分";
+//	CString strsecond = 整数转字符(second) + "秒";
+//	//CString strdayofweek = "星期" + (整数转字符(dayofweek);
+//	now = stryear + strmonth + strday + strhour + strminute + strsecond;
+//
+//	////公告((文本型*)stryear.data());
+//
+//	return now;
+//}
 
 HANDLE 线程创建线程(子程序指针 线程子程序, int 线程ID)
 {

@@ -6,17 +6,17 @@ class ReadWrite
 {
 public:
 
-	template <class T>
-	BOOL 万能写(DWORD 进程ID, ULONG 进程地址, T 写入数据) {
-		return VU_内存_写字节集(进程ID, &进程地址, 写入数据, sizeof(T));
-	}
-
 	template<class T>
 	inline T 万能读(DWORD 进程ID, ULONG 进程地址)
 	{
 		T buffer;
 		VU_内存_读字节集(进程ID, &进程地址, (PVOID)&buffer, sizeof(T));
 		return buffer;
+	}
+
+	template <class T>
+	BOOL 万能写(DWORD 进程ID, ULONG 进程地址, T 写入数据) {
+		return VU_内存_写字节集(进程ID, &进程地址, 写入数据, sizeof(T));
 	}
 
 	//vector<int> 内存读字节集(ULONG 进程ID, ULONG 进程地址, INT32 读取长度);

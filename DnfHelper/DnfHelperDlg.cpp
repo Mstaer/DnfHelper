@@ -12,6 +12,7 @@
 #include "Helper.h"
 #include "VoouerDrv.h"
 #include "ReadWrite.h"
+#include "Address.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -109,9 +110,6 @@ void CDnfHelperDlg::日志公告(CString msg)
 // 激活按钮点击处理
 void CDnfHelperDlg::激活()
 {
-	int abc = 取进程ID(_T("ToDesk.exe"));
-	日志公告(_T("abc：") + 整数转字符(abc));
-	return;
 	//MessageBoxA(NULL, "激活按钮事件", "激活", MB_OK);
 	driver = new Driver(); //实例化类的对象
 
@@ -126,10 +124,11 @@ void CDnfHelperDlg::激活()
 		日志公告(_T("驱动文件不存在"));
 		return;
 	}
-
+	Sleep(500);
 	if (!driver->Install(szDrvPath, L"vuDrv", L"vuDrv"))
 	{
 		日志公告(_T("驱动服务安装失败"));
+		driver->Remove();
 		return;
 	}
 	
@@ -193,17 +192,18 @@ void CDnfHelperDlg::激活()
 		return;
 	}*/
 
-	DWORD GamePid = 10744;
-
+	//DWORD GamePid = 10744;
 	//::GetWindowThreadProcessId(GameHwnd, &GamePid);
-
 	//日志公告(_T("GamePid：") + 整数转字符(GamePid));
+
+	DWORD 全_进程ID = 取进程ID(_T("dnf.exe"));
+	日志公告(_T("全_进程ID：") + 整数转字符(全_进程ID));
 
 	ReadWrite* rw = new ReadWrite();
 
-	DWORD res = rw->万能读<DWORD>(GamePid, (ULONG)10171375);
+	DWORD result = rw->万能读<DWORD>(全_进程ID, 制裁基址);
 
-	日志公告(_T("res：") + 整数转字符(res));
+	日志公告(_T("全_resultID：") + 整数转字符(result));
 
 	//关闭符号链接句柄   使用期间请勿关闭句柄,否则驱动将会失效
 	// CloseHandle(driver->m_hDriver);
@@ -224,7 +224,6 @@ void CDnfHelperDlg::卸载()
 	else {
 		日志公告(L"驱动服务停止失败!");
 	}
-	Sleep(2000);
 	// 卸载驱动服务
 	if (driver->Remove())
 	{
@@ -240,5 +239,5 @@ void CDnfHelperDlg::卸载()
 
 
 	// 关闭窗口界面
-	//AfxGetMainWnd()->SendMessage(WM_CLOSE);
+	AfxGetMainWnd()->SendMessage(WM_CLOSE);
 }

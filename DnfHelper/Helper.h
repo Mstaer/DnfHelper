@@ -45,5 +45,5 @@ typedef void(*子程序指针)();
 // 写配置(L"代码全屏", L"代码", L"48102", L"C:\\情歌.ini");
 // 读配置("代码全屏", "代码", 0, "c:\\情歌.ini");
 
-CString 整数转字符(int num);
+CString 整数转字符(DWORD num);
 int 取进程ID(TCHAR 进程[]);

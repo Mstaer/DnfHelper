@@ -184,6 +184,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Address.h" />
     <ClInclude Include="Automatic.h" />
     <ClInclude Include="Call.h" />
     <ClInclude Include="Helper.h" />
