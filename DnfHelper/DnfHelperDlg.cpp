@@ -11,6 +11,7 @@
 #include "Driver.h"
 #include "Helper.h"
 #include "VoouerDrv.h"
+#include "ReadWrite.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -104,15 +105,15 @@ void CDnfHelperDlg::日志公告(CString msg)
 	pEdit->ReplaceSel(data);
 }
 
+
 // 激活按钮点击处理
 void CDnfHelperDlg::激活()
 {
+	int abc = 取进程ID(_T("ToDesk.exe"));
+	日志公告(_T("abc：") + 整数转字符(abc));
+	return;
 	//MessageBoxA(NULL, "激活按钮事件", "激活", MB_OK);
 	driver = new Driver(); //实例化类的对象
-	notice = new Notice(); //实例化类的对象
-
-	//构建驱动文件路径
-	CString szPath;
 
 	TCHAR szDrvPath[MAX_PATH];
 	GetModuleFileName(NULL, szDrvPath, MAX_PATH);
@@ -185,18 +186,24 @@ void CDnfHelperDlg::激活()
 
 	日志公告(_T("驱动服务加载成功"));
 
-	HWND GameHwnd = ::FindWindow(L"地下城与勇士", L"地下城与勇士");
+	/*HWND GameHwnd = ::FindWindow(L"地下城与勇士", L"地下城与勇士");
 	if (!GameHwnd)
 	{
 		日志公告(L"辅助激活失败，请运行游戏");
 		return;
-	}
+	}*/
 
-	DWORD GamePid;
+	DWORD GamePid = 10744;
 
-	::GetWindowThreadProcessId(GameHwnd, &GamePid);
+	//::GetWindowThreadProcessId(GameHwnd, &GamePid);
 
-	日志公告(_T("GamePid：") + 整数转字符(GamePid));
+	//日志公告(_T("GamePid：") + 整数转字符(GamePid));
+
+	ReadWrite* rw = new ReadWrite();
+
+	DWORD res = rw->万能读<DWORD>(GamePid, (ULONG)10171375);
+
+	日志公告(_T("res：") + 整数转字符(res));
 
 	//关闭符号链接句柄   使用期间请勿关闭句柄,否则驱动将会失效
 	// CloseHandle(driver->m_hDriver);
@@ -211,66 +218,27 @@ void CDnfHelperDlg::卸载()
 	// 停止驱动服务
 	if (driver->Stop())
 	{
-		SetDlgItemText(IDCANCEL, L"驱动服务停止成功!");
+		日志公告(L"驱动服务停止成功!");
 
 	}
 	else {
-		SetDlgItemText(IDCANCEL, L"驱动服务停止失败!");
+		日志公告(L"驱动服务停止失败!");
 	}
-
+	Sleep(2000);
 	// 卸载驱动服务
 	if (driver->Remove())
 	{
-		SetDlgItemText(IDCANCEL, L"驱动服务卸载成功!");
+		日志公告(L"驱动服务卸载成功!");
 	}
 	else
 	{
-		SetDlgItemText(IDCANCEL, L"驱动服务卸载失败!");
+		日志公告(L"驱动服务卸载失败!");
 	}
 
-
-	Sleep(1000);
+	delete driver;
+	//Sleep(100000);
 
 
 	// 关闭窗口界面
-	AfxGetMainWnd()->SendMessage(WM_CLOSE);
-}
-
-#include <tlhelp32.h>
-#include <stdlib.h>
-
-
-BOOL FindProcessPid(const char* ProcessName, DWORD& dwPid)
-{
-	HANDLE hProcessSnap;
-	PROCESSENTRY32 pe32;
-
-	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	if (hProcessSnap == INVALID_HANDLE_VALUE)
-	{
-		return(FALSE);
-	}
-
-	pe32.dwSize = sizeof(PROCESSENTRY32);
-
-	if (!Process32First(hProcessSnap, &pe32))
-	{
-		CloseHandle(hProcessSnap);
-		return(FALSE);
-	}
-
-	BOOL    bRet = FALSE;
-	do
-	{
-		if (!strcmp(ProcessName, pe32.szExeFile))
-		{
-			dwPid = pe32.th32ProcessID;
-			bRet = TRUE;
-			break;
-		}
-
-	} while (Process32Next(hProcessSnap, &pe32));
-
-	CloseHandle(hProcessSnap);
-	return bRet;
+	//AfxGetMainWnd()->SendMessage(WM_CLOSE);
 }

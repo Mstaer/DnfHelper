@@ -1,6 +1,8 @@
 #pragma once
 
 #include "framework.h"
+#include "tlhelp32.h"
+
 #include<vector>
 using namespace std;
 
@@ -44,3 +46,4 @@ typedef void(*子程序指针)();
 // 读配置("代码全屏", "代码", 0, "c:\\情歌.ini");
 
 CString 整数转字符(int num);
+int 取进程ID(TCHAR 进程[]);

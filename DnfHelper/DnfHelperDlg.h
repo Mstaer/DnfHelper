@@ -40,7 +40,5 @@ public:
 public:
 	Driver* driver;
 
-	Notice* notice;
-
-	void CDnfHelperDlg::日志公告(CString msg);
+	void 日志公告(CString msg);
 };

@@ -94,3 +94,23 @@ BOOL 线程销毁线程(HANDLE 线程句柄)
 //	_switch = !_switch;
 //
 //}
+
+
+
+int 取进程ID(TCHAR 进程[]) {
+	PROCESSENTRY32 pe;
+	pe.dwSize = sizeof(PROCESSENTRY32);
+
+	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (INVALID_HANDLE_VALUE == hSnap) return 0;
+	
+	if (Process32First(hSnap, &pe))
+	{
+		do
+		{
+			if (lstrcmpi(进程, pe.szExeFile) == 0) return pe.th32ProcessID;
+		} while (Process32Next(hSnap, &pe));
+	}
+	CloseHandle(hSnap);
+	return 0;
+}

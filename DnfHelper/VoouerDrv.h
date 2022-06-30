@@ -2,21 +2,21 @@
 
 
 VOID 设置驱动句柄(HANDLE hDrv);
-LONG 效验有效性(CHAR* key);
-BOOL 键鼠_安装();
-BOOL 保护_安装();
-BOOL 保护_卸载();
-BOOL 保护_进程_开始(DWORD64 进程ID);
-BOOL 保护_进程_结束(DWORD64 进程ID);
-BOOL 保护_窗口_开始(DWORD64 窗口句柄, DWORD64 进程ID);
-BOOL 保护_窗口_结束(DWORD64 窗口句柄, DWORD64 进程ID);
-BOOL 保护_游戏_开始(DWORD64 窗口句柄, DWORD64 进程ID);
-BOOL 保护_游戏_结束(DWORD64 窗口句柄, DWORD64 进程ID);
+LONG 效验有效性(const char* key);
+BOOL VU_键鼠_安装();
+BOOL VU_保护_安装();
+BOOL VU_保护_卸载();
+BOOL VU_保护_进程_开始(DWORD64 进程ID, BOOL 是否保护驱动);
+BOOL VU_保护_进程_结束(DWORD64 进程ID);
+BOOL VU_保护_窗口_开始(DWORD64 窗口句柄, DWORD64 进程ID);
+BOOL VU_保护_窗口_结束(DWORD64 窗口句柄, DWORD64 进程ID);
+BOOL VU_保护_游戏_开始(DWORD64 窗口句柄, DWORD64 进程ID);
+BOOL VU_保护_游戏_结束(DWORD64 窗口句柄, DWORD64 进程ID);
+LONG VU_内存_置读写模式(DWORD 模式, DWORD 类型);
+DWORD64 VU_内存_申请(DWORD 进程ID, DWORD64 进程地址, DWORD64 申请长度, DWORD64 内存属性, BOOL 是否物理);
 
-DWORD64 内存_申请(DWORD 进程ID, DWORD64 进程地址, DWORD64 申请长度, DWORD64 内存属性, BOOL 是否物理);
-
-BOOL 内存_读字节集(ULONG pid, ULONG addr, PVOID pBuf, INT32 size);
-BOOL 内存_写字节集(ULONG pid, ULONG addr, ULONG pBuf, ULONG size);
+BOOL VU_内存_读字节集(DWORD pid, PVOID addr, PVOID pBuf, INT32 size);
+BOOL VU_内存_写字节集(DWORD pid, PVOID addr, PVOID pBuf, INT32 size);
 
 //此处是我们的demo测试文件,与驱动通讯的封装
 //根据您的代码,进行调整,
@@ -26,76 +26,6 @@ BOOL 内存_写字节集(ULONG pid, ULONG addr, ULONG pBuf, ULONG size);
 //官方网址http://driver.voouer.com/
 
 
-//与驱动通讯专用结构体
-typedef struct _Mem_Info {
-	ULONG64		m_ProcessId;	// 进程pid
-	ULONG64		m_pRWAddr;		// 读写内存的地址
-	ULONG64		m_nRWSize;		// 读写大小
-	ULONG64		m_buf;			// 读写数据地址
-}MsgInfo, * pMem_Info;
-
-//与驱动通讯专用结构体
-typedef struct _InjectInfo {
-	ULONG64		m_ProcessId;	// 进程pid
-	ULONG64		m_pRWAddr;		// 读写内存的目标地址
-	ULONG64		m_nRWSize;		// 读写大小
-	ULONG64		m_buf;			// 读写数据地址
-	ULONG64     m_isPhyMem;     // 是否物理硬件内存
-}InjectInfo, * pInjectInfo;
-
-
-//申请/释放内存
-typedef struct _ALLOCATE_FREE_MEMORY
-{
-	ULONG64 base;             // 尝试在目标地址附近分配内存
-	ULONG64 size;             // 分配内存的长度
-	ULONG64     pid;              // 目标PID
-	ULONG64     protection;       // 内存属性
-	ULONG64     type;             // MEM_RESERVE/MEM_COMMIT/MEM_DECOMMIT/MEM_RELEASE
-	ULONG64   allocate;         // 申请/释放
-	ULONG64   physical;         // 是否物理内存
-} ALLOCATE_FREE_MEMORY, * PALLOCATE_FREE_MEMORY;
-
-//键盘输入的信息结构体
-typedef struct _KEYBOARD_INPUT_DATA {
-
-	USHORT UnitId;
-
-	USHORT MakeCode;
-
-	USHORT Flags;
-
-	USHORT Reserved;
-
-	ULONG ExtraInformation;
-
-} KEYBOARD_INPUT_DATA, * PKEYBOARD_INPUT_DATA;
-
-//鼠标输入的信息结构体
-typedef struct _MOUSE_INPUT_DATA {
-
-	USHORT UnitId;
-
-	USHORT Flags;
-
-	union {
-		ULONG Buttons;
-		struct {
-			USHORT  ButtonFlags;
-			USHORT  ButtonData;
-		};
-	};
-
-	ULONG RawButtons;
-
-	LONG LastX;
-
-	LONG LastY;
-
-	ULONG ExtraInformation;
-
-} MOUSE_INPUT_DATA, * PMOUSE_INPUT_DATA;
-
 #define CTL_NUM 0x800
 
 #define IOCTL_IO_FILE_CHECK					CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	0, METHOD_BUFFERED, FILE_ANY_ACCESS)	//文件效验-----------------
@@ -103,8 +33,10 @@ typedef struct _MOUSE_INPUT_DATA {
 //内存
 #define IOCTL_IO_MEMORY_MOD					CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	1, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_置读写模式
 #define IOCTL_IO_MEMORY_GETMODULEBASE		CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	2, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_取模块基址
-#define IOCTL_IO_MEMORY_READ_EX				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	5, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_强制读取
-#define IOCTL_IO_MEMORY_WRITE_EX			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	6, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_强制写入
+#define IOCTL_IO_MEMORY_READ_EX				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	3, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_读取Ex
+#define IOCTL_IO_MEMORY_WRITE_EX			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	4, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_写入Ex
+#define IOCTL_IO_MEMORY_READ				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	5, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_读取
+#define IOCTL_IO_MEMORY_WRITE				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	6, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_写入
 #define IOCTL_IO_MEMORY_ALLOC				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	7, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_申请/释放
 #define IOCTL_IO_MEMORY_PROTECT				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	8, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_修改属性
 #define IOCTL_IO_MEMORY_QUERY				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	9, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_查询属性
@@ -139,9 +71,151 @@ typedef struct _MOUSE_INPUT_DATA {
 #define IOCTL_IO_PROTECT_GAME_BEGIN			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	29, METHOD_BUFFERED, FILE_ANY_ACCESS)	//保护_游戏_开始
 #define IOCTL_IO_PROTECT_GAME_END			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	30, METHOD_BUFFERED, FILE_ANY_ACCESS)	//保护_游戏_结束
 
-//虚拟硬件Hardware
+//虚拟硬件
 #define IOCTL_IO_HARDWARE_DISK				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	31, METHOD_BUFFERED, FILE_ANY_ACCESS)	//虚拟硬件_硬盘
 #define IOCTL_IO_HARDWARE_VOLUMES			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	32, METHOD_BUFFERED, FILE_ANY_ACCESS)	//虚拟硬件_声卡
 #define IOCTL_IO_HARDWARE_MAC				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	33, METHOD_BUFFERED, FILE_ANY_ACCESS)	//虚拟硬件_网卡
-#define IOCTL_IO_HARDWARE_SMBOIS				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	34, METHOD_BUFFERED, FILE_ANY_ACCESS)	//虚拟硬件_主板
+#define IOCTL_IO_HARDWARE_SMBOIS			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	34, METHOD_BUFFERED, FILE_ANY_ACCESS)	//虚拟硬件_主板
 #define IOCTL_IO_HARDWARE_GPU				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	35, METHOD_BUFFERED, FILE_ANY_ACCESS)	//虚拟硬件_显卡
+
+
+//后台消息
+#define IOCTL_IO_MESSAGE_SEND				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	36, METHOD_BUFFERED, FILE_ANY_ACCESS)	//后台消息_SEND
+#define IOCTL_IO_MESSAGE_POST				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	37, METHOD_BUFFERED, FILE_ANY_ACCESS)	//后台消息_POST
+
+#define IOCTL_IO_BACKGROUND_BIND			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	38, METHOD_BUFFERED, FILE_ANY_ACCESS)	//后台绑定
+#define IOCTL_IO_BACKGROUND_UNBIND			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	39, METHOD_BUFFERED, FILE_ANY_ACCESS)	//后台解绑
+#define IOCTL_IO_BACKGROUND_MOUSE			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	40, METHOD_BUFFERED, FILE_ANY_ACCESS)	//后台鼠标
+#define IOCTL_IO_BACKGROUND_GETMOUSEPOS		CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	41, METHOD_BUFFERED, FILE_ANY_ACCESS)	//后台取鼠标位置
+#define IOCTL_IO_BACKGROUND_KEYBOARD		CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	42, METHOD_BUFFERED, FILE_ANY_ACCESS)	//后台键盘
+
+#define IOCTL_IO_PROTECT_HIDEDRIVER			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	43, METHOD_BUFFERED, FILE_ANY_ACCESS)	//隐藏驱动
+
+
+//远程驱动
+#define IOCTL_IO_SOCKET_CREATLISTEN			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	44, METHOD_BUFFERED, FILE_ANY_ACCESS)	//远驱_创建本地通信端口
+#define IOCTL_IO_SOCKET_DELETELISTEN		CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	45, METHOD_BUFFERED, FILE_ANY_ACCESS)	//远驱_删除本地通信端口
+#define IOCTL_IO_SOCKET_CONNECT				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	46, METHOD_BUFFERED, FILE_ANY_ACCESS)	//远驱_连接远驱
+#define IOCTL_IO_SOCKET_DISCONNECT			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	47, METHOD_BUFFERED, FILE_ANY_ACCESS)	//远驱_断开远驱
+#define IOCTL_IO_SOCKET_SEND				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	48, METHOD_BUFFERED, FILE_ANY_ACCESS)	//远驱_发送数据
+#define IOCTL_IO_SOCKET_RECV				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	49, METHOD_BUFFERED, FILE_ANY_ACCESS)	//远驱_接收数据
+#define IOCTL_IO_SOCKET_MESSAGE				CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	50, METHOD_BUFFERED, FILE_ANY_ACCESS)	//远驱_远驱通信
+#define IOCTL_IO_SOCKET_MESSAGE_Test		CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	51, METHOD_BUFFERED, FILE_ANY_ACCESS)	//远驱_校对通信
+
+#define IOCTL_IO_INJECT_MAPIMAGE			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	52, METHOD_BUFFERED, FILE_ANY_ACCESS)	//注入_映射文件
+
+
+#define IOCTL_IO_MEMORY_GETPIDNUM			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	53, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_取进程数量
+#define IOCTL_IO_MEMORY_GETPIDARRAY			CTL_CODE(FILE_DEVICE_UNKNOWN, CTL_NUM+	54, METHOD_BUFFERED, FILE_ANY_ACCESS)	//内存_取进程数组
+
+
+
+//与驱动通讯专用结构体
+typedef struct _IOCTL_BUFFER {
+	ULONG64		PID;	    // 第1数据
+	ULONG64		Addr;		// 第2数据
+	ULONG64		Size;		// 第3数据
+	ULONG64		Buf;		// 第4数据
+}IOCTL_BUFFER, * PIOCTL_BUFFER;
+
+
+//取模块基址
+typedef struct _IOCTL_BUFFER_GetBase {
+	ULONG64		PID;	// 进程pid
+	ULONG64		ModelAddr;	// 模块地址(不为0则取函数名)
+	CHAR        ModelName[MAX_PATH];//模块名称/函数名称
+}IOCTL_BUFFER_GetBase, * PIOCTL_BUFFER_GetBase;
+
+
+typedef struct _IOCTL_BUFFER_Write {
+	ULONG64		PID;	//目标PID
+	ULONG64     Addr;   //目标地址
+	ULONG64     Size;   //要写入的长度
+	BYTE        Buf[];  //要写入的数据
+}IOCTL_BUFFER_Write, * PIOCTL_BUFFER_Write;
+
+typedef struct _ALLOCATE_FREE_MEMORY_RESULT
+{
+	ULONG64 address;          // Address of allocation
+	ULONG64 size;             // Allocated size
+} ALLOCATE_FREE_MEMORY_RESULT, * PALLOCATE_FREE_MEMORY_RESULT;
+
+
+
+
+
+
+typedef struct _ALLOCATE_FREE_MEMORY
+{
+	ULONG64     base;             // 尝试在目标地址附近分配内存
+	ULONG64     size;             // 分配内存的长度
+	ULONG64     pid;              // 目标PID
+	ULONG64     protection;       // 内存属性
+	ULONG64     type;             // MEM_RESERVE/MEM_COMMIT/MEM_DECOMMIT/MEM_RELEASE
+	ULONG64     allocate;         // 申请/释放
+	ULONG64     physical;         // 是否物理内存
+} ALLOCATE_FREE_MEMORY, * PALLOCATE_FREE_MEMORY;
+
+
+typedef struct _IOCTL_BUFFER_Hook {
+	ULONG64		PID;	// 进程pid
+	ULONG64		n命令模式;		// 读写大小
+	ULONG64		p目标地址;		// 读写内存的目标地址
+	ULONG64		p目的地址;		// 读写数据地址
+	ULONG64     b是否物理;     // 是否物理硬件内存
+	ULONG64		n次数;		    // 
+	ULONG64		Size;		    //ShellCode大小
+	BYTE        Buf[];          //ShellCode代码
+}IOCTL_BUFFER_Hook, * PIOCTL_BUFFER_Hook;
+
+
+
+
+typedef struct _IOCTL_BUFFER_InjectFile {
+	ULONG64		PID;	    // 第1数据
+	ULONG64		Flages;		// 第2数据
+	ULONG64		Type;		// 第3数据
+	ULONG64		str路径;		// 第4数据
+	ULONG64		Size;			//数据大小
+	BYTE		Buf[];			//文件数据
+}IOCTL_BUFFER_InjectFile, * PIOCTL_BUFFER_InjectFile;
+
+
+
+typedef struct _IOCTL_BUFFER_InjectCode {
+	ULONG64		PID;	        // 目标PID
+	ULONG64		Addr;	    	// 读写内存的目标地址
+	ULONG64		Size;		    // 读写大小
+	ULONG64     isPhyMem;       // 是否物理硬件内存
+	BYTE        Buf[];          //要写入的数据
+}IOCTL_BUFFER_InjectCode, * PIOCTL_BUFFER_InjectCode;
+
+
+
+//鼠标输入的信息结构体
+typedef struct _MOUSE_INPUT_DATA {
+	USHORT UnitId;
+	USHORT Flags;
+	union {
+		ULONG Buttons;
+		struct {
+			USHORT  ButtonFlags;
+			USHORT  ButtonData;
+		};
+	};
+	ULONG RawButtons;
+	LONG LastX;
+	LONG LastY;
+	ULONG ExtraInformation;//附加信息,后台存储的是窗口句柄
+} MOUSE_INPUT_DATA, * PMOUSE_INPUT_DATA;
+
+
+
+//键盘输入的信息结构体
+typedef struct _KEYBOARD_INPUT_DATA {
+	USHORT UnitId;
+	USHORT MakeCode;
+	USHORT Flags;
+	USHORT Reserved;
+	ULONG ExtraInformation;
+} KEYBOARD_INPUT_DATA, * PKEYBOARD_INPUT_DATA;
