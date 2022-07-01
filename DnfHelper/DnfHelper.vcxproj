@@ -219,9 +219,7 @@
     <ResourceCompile Include="DnfHelper.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\DnfHelper.rc2" />
-  </ItemGroup>
-  <ItemGroup>
+    <Image Include="Dnf.ico" />
     <Image Include="res\Dnf.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

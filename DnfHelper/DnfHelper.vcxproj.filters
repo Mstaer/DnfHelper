@@ -93,12 +93,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\DnfHelper.rc2">
-      <Filter>资源文件</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="res\Dnf.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="Dnf.ico">
       <Filter>资源文件</Filter>
     </Image>
   </ItemGroup>

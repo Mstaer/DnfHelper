@@ -124,17 +124,15 @@ void CDnfHelperDlg::激活()
 		日志公告(_T("驱动文件不存在"));
 		return;
 	}
-	Sleep(500);
 	if (!driver->Install(szDrvPath, L"vuDrv", L"vuDrv"))
 	{
-		日志公告(_T("驱动服务安装失败"));
-		driver->Remove();
+		日志公告(_T("驱动服务安装失败" + driver->m_dwLastError));
 		return;
 	}
 	
 	// 启动驱动服务
 	if (!driver->Start()) {
-		日志公告(_T("驱动服务启动失败"));
+		日志公告(_T("驱动服务启动失败" + driver->m_dwLastError));
 		return;
 	}
 	
@@ -206,7 +204,7 @@ void CDnfHelperDlg::激活()
 	日志公告(_T("全_resultID：") + 整数转字符(result));
 
 	//关闭符号链接句柄   使用期间请勿关闭句柄,否则驱动将会失效
-	// CloseHandle(driver->m_hDriver);
+	CloseHandle(driver->m_hDriver);
 	driver->m_hDriver = INVALID_HANDLE_VALUE;
 	return;
 }
